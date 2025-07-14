@@ -55,7 +55,8 @@ Solver* solver = new Solver();
 Joint* drag = 0;
 float camZoom = 25.0f;
 float2 camPos = { 0, 5 };
-int currScene = 4;
+float2 camRot = { 30.0f, 0.0f };
+int currScene = 18;
 float2 boxSize = { 1, 1 };
 float2 boxVelocity = { 0, 0 };
 float boxFriction = 0.5f;
@@ -67,6 +68,7 @@ void ui()
     ImGui::Begin("Controls");
     ImGui::Text("Move Cam: W,A,S,D / Middle Mouse");
     ImGui::Text("Zoom Cam: Q,E / Mouse Wheel");
+    ImGui::Text("Rotate Cam: R/F pitch, Z/C yaw");
     ImGui::Text("Make Box: Right Mouse");
     ImGui::Text("Drag Box: Left Mouse");
 
@@ -137,6 +139,14 @@ void input()
         camZoom *= 1.025f;
     if (ImGui::IsKeyDown(ImGuiKey_Q))
         camZoom /= 1.025f;
+    if (ImGui::IsKeyDown(ImGuiKey_R))
+        camRot.x += 1.0f;
+    if (ImGui::IsKeyDown(ImGuiKey_F))
+        camRot.x -= 1.0f;
+    if (ImGui::IsKeyDown(ImGuiKey_Z))
+        camRot.y += 1.0f;
+    if (ImGui::IsKeyDown(ImGuiKey_C))
+        camRot.y -= 1.0f;
 
     // Camera mouse controls
     if (ImGui::IsMouseDown(ImGuiMouseButton_Middle))
@@ -211,13 +221,15 @@ void mainLoop()
     glPointSize(3.0f);
     glViewport(0, 0, w, h);
     glClearColor(1, 1, 1, 1); 
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(camPos.x - w / 2 / camZoom, camPos.x + w / 2 / camZoom, camPos.y - h / 2 / camZoom, camPos.y + h / 2 / camZoom, -1, 1);
+    glOrtho(camPos.x - w / 2 / camZoom, camPos.x + w / 2 / camZoom, camPos.y - h / 2 / camZoom, camPos.y + h / 2 / camZoom, -10, 10);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glDisable(GL_DEPTH_TEST);
+    glRotatef(camRot.x, 1, 0, 0);
+    glRotatef(camRot.y, 0, 1, 0);
+    glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -263,7 +275,7 @@ int main(int argc, char* argv[])
     #endif
 
     // Create the SDL window
-    Window = SDL_CreateWindow("AVBD 2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WinWidth, WinHeight, WindowFlags);
+    Window = SDL_CreateWindow("AVBD 3D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WinWidth, WinHeight, WindowFlags);
     if (!Window)
     {
         printf("Failed to create window: %s\n", SDL_GetError());

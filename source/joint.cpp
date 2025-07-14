@@ -10,6 +10,7 @@
 */
 
 #include "solver.h"
+#include <cmath>
 
 Joint::Joint(Solver* solver, Rigid* bodyA, Rigid* bodyB, float2 rA, float2 rB, float3 stiffness, float motor, float fracture)
     : Force(solver, bodyA, bodyB), rA(rA), rB(rB)
@@ -44,7 +45,7 @@ void Joint::computeConstraint(float alpha)
     for (int i = 0; i < rows(); i++)
     {
         // Store stabilized constraint function, if a hard constraint (Eq. 18)
-        if (isinf(stiffness[i]))
+        if (std::isinf(stiffness[i]))
             C[i] = Cn[i] - C0[i] * alpha;
         else
             C[i] = Cn[i];
@@ -83,7 +84,7 @@ void Joint::draw() const
 
     glColor3f(0.75f, 0.0f, 0.0f);
     glBegin(GL_LINES);
-    glVertex2f(v0.x, v0.y);
-    glVertex2f(v1.x, v1.y);
+    glVertex3f(v0.x, v0.y, 0.0f);
+    glVertex3f(v1.x, v1.y, 0.0f);
     glEnd();
 }

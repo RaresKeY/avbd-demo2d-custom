@@ -136,8 +136,8 @@ void Manifold::draw() const
 
         glColor3f(0.75f, 0.0f, 0.0f);
         glBegin(GL_POINTS);
-        glVertex2f(v0.x, v0.y);
-        glVertex2f(v1.x, v1.y);
+        glVertex3f(v0.x, v0.y, 0.0f);
+        glVertex3f(v1.x, v1.y, 0.0f);
         glEnd();
     }
 }
