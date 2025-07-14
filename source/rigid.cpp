@@ -44,25 +44,46 @@ bool Rigid::constrainedTo(Rigid* other) const
 
 void Rigid::draw()
 {
-    float2x2 R = rotation(position.z);
-    float2 v0 = R * float2{ -size.x * 0.5f, -size.y * 0.5f } + position.xy();
-    float2 v1 = R * float2{ size.x * 0.5f, -size.y * 0.5f } + position.xy();
-    float2 v2 = R * float2{ size.x * 0.5f, size.y * 0.5f } + position.xy();
-    float2 v3 = R * float2{ -size.x * 0.5f, size.y * 0.5f } + position.xy();
+    // Draw as a thin 3D box for a simple 3D look
+    float depth = 0.5f;
+    float3 pos = { position.x, position.y, 0.0f };
+    float3 rot = { 0.0f, 0.0f, position.z };
+
+    float3 v0 = transform(pos, rot, { -size.x * 0.5f, -size.y * 0.5f, -depth });
+    float3 v1 = transform(pos, rot, {  size.x * 0.5f, -size.y * 0.5f, -depth });
+    float3 v2 = transform(pos, rot, {  size.x * 0.5f,  size.y * 0.5f, -depth });
+    float3 v3 = transform(pos, rot, { -size.x * 0.5f,  size.y * 0.5f, -depth });
+    float3 v4 = transform(pos, rot, { -size.x * 0.5f, -size.y * 0.5f,  depth });
+    float3 v5 = transform(pos, rot, {  size.x * 0.5f, -size.y * 0.5f,  depth });
+    float3 v6 = transform(pos, rot, {  size.x * 0.5f,  size.y * 0.5f,  depth });
+    float3 v7 = transform(pos, rot, { -size.x * 0.5f,  size.y * 0.5f,  depth });
 
     glColor3f(0.6f, 0.6f, 0.6f);
     glBegin(GL_QUADS);
-    glVertex2f(v0.x, v0.y);
-    glVertex2f(v1.x, v1.y);
-    glVertex2f(v2.x, v2.y);
-    glVertex2f(v3.x, v3.y);
+    // Front face
+    glVertex3f(v4.x, v4.y, v4.z);
+    glVertex3f(v5.x, v5.y, v5.z);
+    glVertex3f(v6.x, v6.y, v6.z);
+    glVertex3f(v7.x, v7.y, v7.z);
+    // Back face
+    glVertex3f(v0.x, v0.y, v0.z);
+    glVertex3f(v1.x, v1.y, v1.z);
+    glVertex3f(v2.x, v2.y, v2.z);
+    glVertex3f(v3.x, v3.y, v3.z);
     glEnd();
 
     glColor3f(0, 0, 0);
     glBegin(GL_LINE_LOOP);
-    glVertex2f(v0.x, v0.y);
-    glVertex2f(v1.x, v1.y);
-    glVertex2f(v2.x, v2.y);
-    glVertex2f(v3.x, v3.y);
+    glVertex3f(v0.x, v0.y, v0.z);
+    glVertex3f(v1.x, v1.y, v1.z);
+    glVertex3f(v2.x, v2.y, v2.z);
+    glVertex3f(v3.x, v3.y, v3.z);
+    glEnd();
+
+    glBegin(GL_LINE_LOOP);
+    glVertex3f(v4.x, v4.y, v4.z);
+    glVertex3f(v5.x, v5.y, v5.z);
+    glVertex3f(v6.x, v6.y, v6.z);
+    glVertex3f(v7.x, v7.y, v7.z);
     glEnd();
 }

@@ -212,6 +212,15 @@ inline float3x3 operator/(float3x3 a, float b)
     return { a[0] / b, a[1] / b, a[2] / b };
 }
 
+inline float3x3 operator*(float3x3 a, float3x3 b)
+{
+    return {
+        float3 { dot(a.row[0], b.col(0)), dot(a.row[0], b.col(1)), dot(a.row[0], b.col(2)) },
+        float3 { dot(a.row[1], b.col(0)), dot(a.row[1], b.col(1)), dot(a.row[1], b.col(2)) },
+        float3 { dot(a.row[2], b.col(0)), dot(a.row[2], b.col(1)), dot(a.row[2], b.col(2)) }
+    };
+}
+
 // Math functions
 
 inline float sign(float x)
@@ -267,6 +276,11 @@ inline float length(float3 v)
 inline float cross(float2 a, float2 b)
 {
     return a.x * b.y - a.y * b.x;
+}
+
+inline float3 cross(float3 a, float3 b)
+{
+    return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
 }
 
 inline float2x2 outer(float2 a, float2 b)
@@ -347,4 +361,21 @@ inline float3 solve(float3x3 a, float3 b)
     x[0] = z1 - L21 * x[1] - L31 * x[2];
 
     return x;
+}
+
+inline float3x3 rotation(float3 angles)
+{
+    float cx = cos(angles.x), sx = sin(angles.x);
+    float cy = cos(angles.y), sy = sin(angles.y);
+    float cz = cos(angles.z), sz = sin(angles.z);
+
+    float3x3 Rx = { 1, 0, 0, 0, cx, -sx, 0, sx, cx };
+    float3x3 Ry = { cy, 0, sy, 0, 1, 0, -sy, 0, cy };
+    float3x3 Rz = { cz, -sz, 0, sz, cz, 0, 0, 0, 1 };
+    return Rz * Ry * Rx;
+}
+
+inline float3 transform(float3 pos, float3 rot, float3 v)
+{
+    return rotation(rot) * v + pos;
 }

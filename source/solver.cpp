@@ -10,6 +10,7 @@
 */
 
 #include "solver.h"
+#include <cmath>
 
 Solver::Solver()
     : bodies(0), forces(0)
@@ -126,7 +127,7 @@ void Solver::step()
         float3 accel = (body->velocity - body->prevVelocity) / dt;
         float accelExt = accel.y * sign(gravity);
         float accelWeight = clamp(accelExt / abs(gravity), 0.0f, 1.0f);
-        if (!isfinite(accelWeight)) accelWeight = 0.0f;
+        if (!std::isfinite(accelWeight)) accelWeight = 0.0f;
 
         // Save initial position (x-) and compute warmstarted position (See original VBD paper)
         body->initial = body->position;
@@ -158,7 +159,7 @@ void Solver::step()
                 for (int i = 0; i < force->rows(); i++)
                 {
                     // Use lambda as 0 if it's not a hard constraint
-                    float lambda = isinf(force->stiffness[i]) ? force->lambda[i] : 0.0f;
+                    float lambda = std::isinf(force->stiffness[i]) ? force->lambda[i] : 0.0f;
 
                     // Compute the clamped force magnitude (Sec 3.2)
                     float f = clamp(force->penalty[i] * force->C[i] + lambda + force->motor[i], force->fmin[i], force->fmax[i]);
@@ -185,7 +186,7 @@ void Solver::step()
             for (int i = 0; i < force->rows(); i++)
             {
                 // Use lambda as 0 if it's not a hard constraint
-                float lambda = isinf(force->stiffness[i]) ? force->lambda[i] : 0.0f;
+                float lambda = std::isinf(force->stiffness[i]) ? force->lambda[i] : 0.0f;
 
                 // Update lambda (Eq 11)
                 // Note that we don't include non-conservative forces (ie motors) in the lambda update, as they are not part of the dual problem.
