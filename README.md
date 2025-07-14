@@ -1,6 +1,6 @@
-# avbd-demo2d
+# avbd-demo3d
 
-This is a simple 2D implementation of Augmented Vertex Block Decent (AVBD).
+This is a simple 3D implementation of Augmented Vertex Block Decent (AVBD).
 
 For more details on the technique (including a pre-built web demo) see the project page: https://graphics.cs.utah.edu/research/projects/avbd/
 
@@ -10,7 +10,7 @@ This repository is not intended to be a super optimized implementation, but an e
 
 Checkout the code and submodules using:
 
-```git clone --recurse-submodules https://github.com/savant117/avbd-demo2d```
+```git clone --recurse-submodules https://github.com/savant117/avbd-demo3d```
 
 Make sure you have cmake and a c++ compiler installed.
 
@@ -25,7 +25,7 @@ cmake ..
 cmake --build . --config Release
 ```
 
-To run, launch Release/avbd_demo2d.
+To run, launch Release/avbd_demo3d.
 
 ### Web
 
@@ -46,4 +46,4 @@ emcmake cmake ..
 ninja
 ```
 
-To run, open avbd_demo2d.html in your browser.
+To run, open avbd_demo3d.html in your browser.

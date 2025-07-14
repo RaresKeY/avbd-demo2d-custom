@@ -211,13 +211,13 @@ void mainLoop()
     glPointSize(3.0f);
     glViewport(0, 0, w, h);
     glClearColor(1, 1, 1, 1); 
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(camPos.x - w / 2 / camZoom, camPos.x + w / 2 / camZoom, camPos.y - h / 2 / camZoom, camPos.y + h / 2 / camZoom, -1, 1);
+    glOrtho(camPos.x - w / 2 / camZoom, camPos.x + w / 2 / camZoom, camPos.y - h / 2 / camZoom, camPos.y + h / 2 / camZoom, -10, 10);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -263,7 +263,7 @@ int main(int argc, char* argv[])
     #endif
 
     // Create the SDL window
-    Window = SDL_CreateWindow("AVBD 2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WinWidth, WinHeight, WindowFlags);
+    Window = SDL_CreateWindow("AVBD 3D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WinWidth, WinHeight, WindowFlags);
     if (!Window)
     {
         printf("Failed to create window: %s\n", SDL_GetError());
