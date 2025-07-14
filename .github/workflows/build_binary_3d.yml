@@ -1,0 +1,32 @@
+name: Build 3D Demo
+
+on:
+  push:
+    branches:
+      - codex/update-to-3d
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Create build dir
+        run: if [ ! -d build ]; then mkdir build; fi
+
+      - name: Configure CMake
+        run: cmake .\ -B build -G "Visual Studio 17 2022"
+
+      - name: Build Release
+        run: cmake --build build --config Release
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: avbd_demo3d
+          path: build/Release/avbd_demo3d.exe
