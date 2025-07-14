@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 # Project Name
-project(avbd_demo2d)
+project(avbd_demo3d)
 
 # Set C++ Standard
 set(CMAKE_CXX_STANDARD 17)
