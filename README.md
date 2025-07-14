@@ -47,3 +47,19 @@ ninja
 ```
 
 To run, open avbd_demo2d.html in your browser.
+
+## Blender Add-on
+
+The `blender_addon` directory now contains a physics plugin for Blender. First
+build the Python bindings using CMake:
+
+```bash
+mkdir build-bindings
+cd build-bindings
+cmake ../bindings
+cmake --build . --config Release
+```
+
+Copy the resulting `avbd` module alongside the add-on and enable it from the
+preferences. A new **AVBD** panel will appear in the 3D Viewport to run
+simulations directly inside Blender.

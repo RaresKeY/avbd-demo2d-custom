@@ -59,3 +59,5 @@ if(WIN32)
             $<TARGET_FILE_DIR:${PROJECT_NAME}> # Output directory of the executable
     )
 endif()
+
+add_subdirectory(bindings)
