@@ -1,61 +1,59 @@
 cmake_minimum_required(VERSION 3.13)
 
-# Project Name
-project(avbd_demo2d)
+project(avbd_demo3d)
 
-# Set C++ Standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Automatically collect all source files from the "source" directory
-file(GLOB_RECURSE SOURCES "source/*.cpp" "source/*.h")
+# Fetch external dependencies
+include(FetchContent)
 
-# Add Executable
-add_executable(${PROJECT_NAME} ${SOURCES})
+# SDL2 for windowing and OpenGL context
+FetchContent_Declare(
+  SDL2
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+  GIT_TAG release-2.30.3
+)
+FetchContent_MakeAvailable(SDL2)
 
-# Include SDL2 first (ImGui needs it)
-add_subdirectory(external/SDL)
-
-# Add ImGui as a separate project
-set(IMGUI_PROJECT_NAME "imgui")
+# ImGui for UI
+FetchContent_Declare(
+  imgui
+  GIT_REPOSITORY https://github.com/ocornut/imgui.git
+  GIT_TAG v1.90.4
+)
+FetchContent_Populate(imgui)
 
 file(GLOB IMGUI_SRC
-    external/imgui/*.cpp
-    external/imgui/backends/imgui_impl_sdl2.cpp
-    external/imgui/backends/imgui_impl_opengl3.cpp
-)
+    ${imgui_SOURCE_DIR}/*.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
 
-add_library(${IMGUI_PROJECT_NAME} STATIC ${IMGUI_SRC})
+add_library(imgui STATIC ${IMGUI_SRC})
+target_include_directories(imgui PUBLIC
+    ${imgui_SOURCE_DIR}
+    ${imgui_SOURCE_DIR}/backends
+    ${sdl2_SOURCE_DIR}/include)
+target_link_libraries(imgui PUBLIC SDL2::SDL2 SDL2::SDL2main)
 
-# Set include directories for ImGui
-target_include_directories(${IMGUI_PROJECT_NAME} PUBLIC
-    external/imgui
-    external/imgui/backends
-    external/SDL/include
-)
+file(GLOB_RECURSE SOURCES "source/*.cpp" "source/*.h")
+add_executable(${PROJECT_NAME} ${SOURCES})
 
-# Link ImGui with SDL2
-target_link_libraries(${IMGUI_PROJECT_NAME} PUBLIC SDL2::SDL2 SDL2::SDL2main)
-
-# Link the main project with SDL2 and ImGui
-target_include_directories(${PROJECT_NAME} PRIVATE external/SDL/include)
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2::SDL2main ${IMGUI_PROJECT_NAME})
+target_include_directories(${PROJECT_NAME} PRIVATE ${sdl2_SOURCE_DIR}/include)
+target_link_libraries(${PROJECT_NAME} PRIVATE imgui SDL2::SDL2 SDL2::SDL2main)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -s USE_SDL=2 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s SINGLE_FILE=1 -s LEGACY_GL_EMULATION=1 --shell-file ../source/shell.html")
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
 else()
-    # Find and Link OpenGL
     find_package(OpenGL REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
 endif()
 
-# Copy SDL2.dll to the output folder on Windows
+# Copy SDL2.dll for Windows builds
 if(WIN32)
-    add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:SDL2::SDL2>    # Path to the built SDL2.dll
-            $<TARGET_FILE_DIR:${PROJECT_NAME}> # Output directory of the executable
-    )
+            $<TARGET_FILE:SDL2::SDL2>
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 endif()
