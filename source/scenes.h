@@ -270,6 +270,21 @@ static void sceneFracture(Solver* solver)
         new Rigid(solver, { 2, 1 }, 1.0f, 0.5f, { 0, i * 2.0f + 8.0f, 0 });
 }
 
+static void scene3DDefault(Solver* solver)
+{
+    solver->clear();
+
+    // Ground plane
+    new Rigid(solver, { 100, 0.5f }, 0.0f, 0.5f, { 0.0f, -2.0f, 0.0f });
+
+    // Grid of boxes to show depth when the camera is rotated
+    const int W = 6, H = 6;
+    for (int x = 0; x < W; x++)
+        for (int y = 0; y < H; y++)
+            new Rigid(solver, { 1, 1 }, 1.0f, 0.5f,
+                { (float)x - W * 0.5f + 0.5f, (float)y * 1.5f + 0.5f, 0.0f });
+}
+
 
 static void (*scenes[])(Solver*) =
 {
@@ -290,7 +305,8 @@ static void (*scenes[])(Solver*) =
     sceneJointGrid,
     sceneNet,
     sceneMotor,
-    sceneFracture
+    sceneFracture,
+    scene3DDefault
 };
 
 static const char* sceneNames[] = {
@@ -311,7 +327,8 @@ static const char* sceneNames[] = {
     "Joint Grid",
     "Net",
     "Motor",
-    "Fracture"
+    "Fracture",
+    "3D Boxes"
 };
 
-static const int sceneCount = 18;
+static const int sceneCount = 19;

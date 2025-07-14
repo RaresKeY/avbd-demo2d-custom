@@ -6,6 +6,8 @@ For more details on the technique (including a pre-built web demo) see the proje
 
 This repository is not intended to be a super optimized implementation, but an easy to understand demonstration of how to implement the technique.
 
+When launched, the demo loads a small 3D box grid to show the new 3D renderer. Use the controls below to move and rotate the camera around the scene.
+
 ## Building
 
 Checkout the code and submodules using:
@@ -26,6 +28,12 @@ cmake --build . --config Release
 ```
 
 To run, launch Release/avbd_demo3d.
+
+### Controls
+
+- **Move Camera:** `W`, `A`, `S`, `D` or hold the middle mouse button
+- **Zoom:** `Q`/`E` or mouse wheel
+- **Rotate:** `R`/`F` pitch, `Z`/`C` yaw
 
 ### Web
 
